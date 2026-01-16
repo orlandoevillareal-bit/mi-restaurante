@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>[Nombre de tu Restaurante] | Menú Gourmet y Reservas</title>
+    <meta name="description" content="Descubre nuestra selección de platos gourmet: Salmón al pistacho, Lasaña de berenjena y postres artesanales. Pide a domicilio o reserva tu mesa en [Tu Ciudad].">
+    <meta name="keywords" content="restaurante, comida gourmet, domicilio, reserva de mesa, [Tu Ciudad]">
+    <meta name="author" content="[Nombre de tu Restaurante]">
+
+    <meta property="og:title" content="Menú Digital - [Nombre de tu Restaurante]">
+    <meta property="og:description" content="¿Hambre? Mira nuestra carta: Entradas, Platos Fuertes y Postres. ¡Pide por WhatsApp en segundos!">
+    <meta property="og:image" content="https://tudominio.com/imagen-previa.jpg"> <meta property="og:url" content="https://tudominio.com">
+    <meta property="og:type" content="website">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Restaurant",
+      "name": "[Nombre de tu Restaurante]",
+      "telephone": "+573003625619",
+      "priceRange": "$$",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "[Tu Dirección]",
+        "addressLocality": "[Tu Ciudad]",
+        "addressCountry": "CO"
+      },
+      "openingHoursSpecification": {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+        "opens": "08:00",
+        "closes": "18:00"
+      }
+    }
+    </script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; scroll-behavior: smooth; }
+        :root {
+            --primary-color: #c52e32;
+            --secondary-color: #2a2a2a;
+            --accent-color: #f8b334;
+            --light-color: #f5f5f5;
+            --success-color: #25D366;
+        }
+        body { background-color: #f9f9f9; color: #333; }
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+        
+        header { background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; padding: 15px 0; }
+        .header-container { display: flex; justify-content: space-between; align-items: center; }
+        
+        .status-badge { padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; margin-top: 5px; display: inline-block; }
+        .open { background: #e8f5e9; color: #2e7d32; }
+        .closed { background: #ffebee; color: #c62828; }
+
+        .categories-nav { display: flex; justify-content: center; gap: 10px; margin: 25px 0; flex-wrap: wrap; }
+        .cat-btn { padding: 8px 18px; border: 1px solid #ddd; background: white; border-radius: 25px; cursor: pointer; transition: 0.3s; font-size: 0.9rem; }
+        .cat-btn.active { background: var(--primary-color); color: white; border-color: var(--primary-color); }
+
+        .menu-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 15px; }
+        .menu-item { background: white; border-radius: 10px; padding: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); display: flex; flex-direction: column; }
+        .price { color: var(--primary-color); font-weight: bold; margin: 10px 0; }
+        
+        .cart-modal { display: none; position: fixed; top: 0; right: 0; bottom: 0; width: 400px; background: white; z-index: 2000; padding: 25px; box-shadow: -5px 0 15px rgba(0,0,0,0.1); overflow-y: auto; }
+        .overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1500; }
+        
+        .btn-full { width: 100%; padding: 12px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; margin-top: 10px; }
+        .btn-primary { background: var(--primary-color); color: white; }
+        .btn-whatsapp { background: var(--success-color); color: white; }
+        
+        .form-group { margin-bottom: 12px; }
+        .form-control { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; margin-top: 5px; }
+
+        @media (max-width: 450px) { .cart-modal { width: 100%; } }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="container header-container">
+            <div>
+                <h1 style="font-size: 1.3rem; color: var(--secondary-color);">RestaurantApp Pro</h1>
+                <div id="horarioStatus"></div>
+            </div>
+            <button onclick="toggleCart()" style="background: none; border: none; font-size: 1.4rem; cursor: pointer; position: relative;">
+                <i class="fas fa-shopping-cart"></i>
+                <span id="cartCount" style="position: absolute; top: -8px; right: -8px; background: var(--primary-color); color: white; border-radius: 50%; width: 18px; height: 18px; font-size: 0.7rem; display: flex; align-items: center; justify-content: center;">0</span>
+            </button>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="categories-nav" id="catNav">
+            <button class="cat-btn active" onclick="filterMenu('todos')">Todos</button>
+            <button class="cat-btn" onclick="filterMenu('entradas')">Entradas</button>
+            <button class="cat-btn" onclick="filterMenu('fuertes')">Fuertes</button>
+            <button class="cat-btn" onclick="filterMenu('bebidas')">Bebidas</button>
+            <button class="cat-btn" onclick="filterMenu('postres')">Postres</button>
+        </div>
+
+        <div class="menu-grid" id="menuDisplay"></div>
+
+        <section id="reservas" style="margin: 50px 0; background: #fff; padding: 30px; border-radius: 10px;">
+            <h2 style="text-align: center; margin-bottom: 10px;">Reserva tu Mesa</h2>
+            <p style="text-align: center; color: #666; font-size: 0.85rem; margin-bottom: 20px;">
+                <i class="fas fa-info-circle"></i> Política: La mesa se mantendrá por 15 min después de la hora pactada.
+            </p>
+            <div style="max-width: 500px; margin: 0 auto;">
+                <input type="text" id="resvName" class="form-control" placeholder="Nombre completo" style="margin-bottom:10px">
+                <div style="display: flex; gap: 10px;">
+                    <input type="date" id="resvDate" class="form-control">
+                    <input type="time" id="resvTime" class="form-control">
+                </div>
+                <button onclick="enviarReserva()" class="btn-full btn-primary">Confirmar Reserva</button>
+            </div>
+        </section>
+    </div>
+
+    <div class="overlay" id="overlay" onclick="toggleCart()"></div>
+    <div class="cart-modal" id="cartModal">
+        <h3>Tu Pedido</h3>
+        <hr style="margin: 15px 0;">
+        <div id="cartList"></div>
+        
+        <div style="margin-top: 20px; background: #f9f9f9; padding: 15px; border-radius: 8px;">
+            <div class="form-group">
+                <label>Método de Entrega</label>
+                <select id="entrega" class="form-control" onchange="updateCartUI()">
+                    <option value="local">Recoger en local ($0.00)</option>
+                    <option value="domicilio">Domicilio (+$5.00)</option>
+                </select>
+            </div>
+            <div id="direccionGroup" class="form-group" style="display:none">
+                <label>Dirección</label>
+                <input type="text" id="direccion" class="form-control" placeholder="Calle, Barrio, Apto...">
+            </div>
+            <div class="form-group">
+                <label>Método de Pago</label>
+                <select id="pago" class="form-control">
+                    <option>Efectivo</option>
+                    <option>Transferencia</option>
+                    <option>Tarjeta</option>
+                </select>
+            </div>
+            <h4 style="margin-top: 15px;">Total: <span id="totalPedido">$0.00</span></h4>
+        </div>
+        
+        <button onclick="enviarPedido()" class="btn-full btn-whatsapp">
+            <i class="fab fa-whatsapp"></i> Enviar a WhatsApp
+        </button>
+    </div>
+
+    <script>
+        const WHATSAPP_NUMBER = "573003625619";
+        const COSTO_DOMICILIO = 5.00;
+
+        const menuData = [
+            // ENTRADAS
+            { id: 1, cat: 'entradas', name: 'Huevos rellenos gratinados', price: 8.50, stock: true },
+            { id: 2, cat: 'entradas', name: 'Empanadillas de pollo y queso', price: 7.00, stock: true },
+            { id: 3, cat: 'entradas', name: 'Tortilla de bacalao', price: 9.50, stock: true },
+            { id: 4, cat: 'entradas', name: 'Arrollado de espinacas', price: 8.00, stock: false },
+            // FUERTES
+            { id: 5, cat: 'fuertes', name: 'Salmón al pistacho', price: 22.00, stock: true },
+            { id: 6, cat: 'fuertes', name: 'Lasaña de berenjena', price: 16.00, stock: true },
+            { id: 7, cat: 'fuertes', name: 'Risotto de setas', price: 18.50, stock: true },
+            { id: 8, cat: 'fuertes', name: 'Tacos de coliflor al pastor', price: 14.00, stock: true },
+            // BEBIDAS
+            { id: 9, cat: 'bebidas', name: 'Sauvignon Blanc', price: 25.00, stock: true },
+            { id: 10, cat: 'bebidas', name: 'Cerveza Lager', price: 4.50, stock: true },
+            { id: 11, cat: 'bebidas', name: 'Té de hibisco', price: 3.50, stock: true },
+            // POSTRES
+            { id: 12, cat: 'postres', name: 'Mousse de maracuyá', price: 6.00, stock: true },
+            { id: 13, cat: 'postres', name: 'Tarta de queso vasca', price: 7.50, stock: true },
+            { id: 14, cat: 'postres', name: 'Tiramisú de pistacho', price: 8.00, stock: true }
+        ];
+
+        let cart = [];
+
+        function checkHorario() {
+            const hora = new Date().getHours();
+            const status = document.getElementById('horarioStatus');
+            const abierto = hora >= 8 && hora < 18;
+            status.innerHTML = abierto 
+                ? '<span class="status-badge open">Abierto: 08 AM - 06 PM</span>' 
+                : '<span class="status-badge closed">Cerrado ahora</span>';
+            return abierto;
+        }
+
+        function filterMenu(cat) {
+            const display = document.getElementById('menuDisplay');
+            display.innerHTML = '';
+            
+            document.querySelectorAll('.cat-btn').forEach(b => {
+                b.classList.toggle('active', b.innerText.toLowerCase().includes(cat) || (cat==='todos' && b.innerText==='Todos'));
+            });
+
+            const filtered = cat === 'todos' ? menuData : menuData.filter(i => i.cat === cat);
+
+            filtered.forEach(item => {
+                display.innerHTML += `
+                    <div class="menu-item" style="opacity: ${item.stock ? '1' : '0.6'}">
+                        <h4 style="font-size: 0.95rem;">${item.name}</h4>
+                        <p class="price">$${item.price.toFixed(2)}</p>
+                        ${item.stock && checkHorario() 
+                            ? `<button onclick="addToCart(${item.id})" class="btn-full btn-primary" style="padding:6px; font-size:0.8rem">Agregar</button>` 
+                            : `<button disabled class="btn-full" style="padding:6px; font-size:0.8rem; background:#ccc">No disponible</button>`}
+                    </div>
+                `;
+            });
+        }
+
+        function addToCart(id) {
+            const prod = menuData.find(p => p.id === id);
+            const exists = cart.find(i => i.id === id);
+            if (exists) exists.qty++;
+            else cart.push({...prod, qty: 1});
+            updateCartUI();
+        }
+
+        function updateCartUI() {
+            const list = document.getElementById('cartList');
+            const totalElt = document.getElementById('totalPedido');
+            const countElt = document.getElementById('cartCount');
+            const entrega = document.getElementById('entrega').value;
+            
+            list.innerHTML = '';
+            let subtotal = 0;
+            
+            cart.forEach((item, idx) => {
+                subtotal += item.price * item.qty;
+                list.innerHTML += `<div style="display:flex; justify-content:space-between; margin-bottom:8px; font-size:0.9rem">
+                    <span>${item.name} x${item.qty}</span>
+                    <span>$${(item.price * item.qty).toFixed(2)} <i class="fas fa-trash" onclick="cart.splice(${idx},1);updateCartUI()" style="color:red; cursor:pointer; margin-left:5px"></i></span>
+                </div>`;
+            });
+
+            document.getElementById('direccionGroup').style.display = entrega === 'domicilio' ? 'block' : 'none';
+            const total = entrega === 'domicilio' ? subtotal + COSTO_DOMICILIO : subtotal;
+            
+            totalElt.innerText = `$${total.toFixed(2)}`;
+            countElt.innerText = cart.reduce((a, b) => a + b.qty, 0);
+        }
+
+        function toggleCart() {
+            const m = document.getElementById('cartModal');
+            const o = document.getElementById('overlay');
+            const show = m.style.display === 'block';
+            m.style.display = show ? 'none' : 'block';
+            o.style.display = show ? 'none' : 'block';
+        }
+
+        function enviarPedido() {
+            if (cart.length === 0) return alert("Carrito vacío");
+            const entrega = document.getElementById('entrega').value;
+            const dir = document.getElementById('direccion').value;
+            if(entrega === 'domicilio' && !dir) return alert("Ingresa dirección");
+
+            let msg = `*NUEVO PEDIDO*\n`;
+            cart.forEach(i => msg += `- ${i.name} (x${i.qty})\n`);
+            msg += `\n*Entrega:* ${entrega}\n*Pago:* ${document.getElementById('pago').value}\n*Total:* ${document.getElementById('totalPedido').innerText}`;
+            if(dir) msg += `\n*Dirección:* ${dir}`;
+
+            window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`);
+        }
+
+        function enviarReserva() {
+            const n = document.getElementById('resvName').value;
+            const f = document.getElementById('resvDate').value;
+            const h = document.getElementById('resvTime').value;
+            if(!n || !f || !h) return alert("Completa los datos");
+
+            const msg = `*RESERVA*\nNombre: ${n}\nFecha: ${f}\nHora: ${h}\n_Nota: Acepto la política de 15 min de espera._`;
+            window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`);
+        }
+
+        // Inicio
+        checkHorario();
+        filterMenu('todos');
+    </script>
+</body>
+</html>
