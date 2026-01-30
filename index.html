@@ -5,26 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <title>Sabor y Tradición | Menú Gourmet</title>
-    <meta name="description" content="Descubre nuestra selección de platos gourmet: Salmón al pistacho, Lasaña de berenjena y postres artesanales. Pide a domicilio o reserva tu mesa en [Tu Ciudad].">
-    <meta name="keywords" content="restaurante, comida gourmet, domicilio, reserva de mesa, [Tu Ciudad]">
-    <meta name="author" content="[Nombre de tu Restaurante]">
+    <meta name="description" content="Descubre nuestra selección de platos gourmet en Sabor y Tradición. Pide a domicilio o reserva tu mesa en línea.">
+    <meta name="author" content="Sabor y Tradición">
 
-    <meta property="og:title" content="Menú Digital - [Nombre de tu Restaurante]">
-    <meta property="og:description" content="¿Hambre? Mira nuestra carta: Entradas, Platos Fuertes y Postres. ¡Pide por WhatsApp en segundos!">
-    <meta property="og:image" content="https://tudominio.com/imagen-previa.jpg"> <meta property="og:url" content="https://tudominio.com">
+    <meta property="og:title" content="Menú Digital - Sabor y Tradición">
+    <meta property="og:description" content="¿Hambre? Mira nuestra carta: Entradas, Platos Fuertes y Postres. ¡Pide por WhatsApp!">
     <meta property="og:type" content="website">
 
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "Restaurant",
-     "name": "Sabor y Tradición"
+      "name": "Sabor y Tradición",
       "telephone": "+573003625619",
       "priceRange": "$$",
       "address": {
         "@type": "PostalAddress",
-        "streetAddress": "[Tu Dirección]",
-        "addressLocality": "[Tu Ciudad]",
+        "streetAddress": "Escribe aquí tu dirección",
+        "addressLocality": "Escribe tu Ciudad",
         "addressCountry": "CO"
       },
       "openingHoursSpecification": {
@@ -35,6 +33,9 @@
       }
     }
     </script>
+    ```
+Y en el **Body** (Línea 100 aprox):
+```html
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -80,10 +81,12 @@
 <body>
 
     <header>
-        <div class="container header-container">
-            <div>
-                <h1 style="font-size: 1.3rem; color: var(--secondary-color);">RestaurantApp Pro</h1>
-                <div id="horarioStatus"></div>
+    <div class="container header-container">
+        <div>
+            <h1 style="font-size: 1.3rem; color: var(--secondary-color);">Sabor y Tradición</h1>
+            <div id="horarioStatus"></div>
+        </div>
+        ```
             </div>
             <button onclick="toggleCart()" style="background: none; border: none; font-size: 1.4rem; cursor: pointer; position: relative;">
                 <i class="fas fa-shopping-cart"></i>
@@ -284,4 +287,5 @@
 </body>
 
 </html>
+
 
